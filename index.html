@@ -1,240 +1,560 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="mg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Plugin & Sample Explorer</title>
+    <title>FLM Gasy Plugins Explorer</title>
 
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" id="manifestPlaceholder">
+    <meta name="theme-color" content="#10b981">
+
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
-            --card-bg: rgba(30, 41, 59, 0.6);
-            --card-hover: rgba(51, 65, 85, 0.8);
-            --text-main: #f8fafc;
-            --text-sub: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --input-bg: rgba(30, 41, 59, 0.8);
-        }
-
-        body.light-mode {
-            --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
-            --card-bg: rgba(255, 255, 255, 0.8);
-            --card-hover: rgba(241, 245, 249, 1);
+            /* Theme 1: Mazava (Clair) */
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 50%, #f3e8ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.92);
+            --card-hover: #ffffff;
             --text-main: #0f172a;
             --text-sub: #64748b;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(99, 102, 241, 0.15);
+            --input-bg: #ffffff;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+            --btn-grad: linear-gradient(135deg, #3b82f6, #6366f1);
+            --btn-download: linear-gradient(135deg, #10b981, #059669);
+            --shadow-color: rgba(99, 102, 241, 0.12);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; padding-bottom: 7rem; }
+        body.dark-mode {
+            /* Theme 2: Maizina (Dark) */
+            --bg-gradient: linear-gradient(135deg, #090d16 0%, #111827 50%, #1e1b4b 100%);
+            --card-bg: rgba(17, 24, 39, 0.85);
+            --card-hover: rgba(31, 41, 55, 0.95);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(17, 24, 39, 0.9);
+            --accent-gradient: linear-gradient(135deg, #818cf8, #c084fc, #f472b6);
+            --btn-grad: linear-gradient(135deg, #6366f1, #4f46e5);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        body.green-mode {
+            /* Theme 3: Vert (Emerald Cyber) */
+            --bg-gradient: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #0f5132 100%);
+            --card-bg: rgba(6, 78, 59, 0.75);
+            --card-hover: rgba(4, 120, 87, 0.85);
+            --text-main: #ecfdf5;
+            --text-sub: #a7f3d0;
+            --border-color: rgba(52, 211, 153, 0.25);
+            --input-bg: rgba(2, 44, 34, 0.85);
+            --accent-gradient: linear-gradient(135deg, #10b981, #34d399, #059669);
+            --btn-grad: linear-gradient(135deg, #059669, #047857);
+            --shadow-color: rgba(16, 185, 129, 0.2);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+        }
+
+        html, body {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden; /* Résolution du problème de débordement d'écran */
+        }
+
+        body { 
+            background: var(--bg-gradient); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            padding-bottom: 6rem; 
+            transition: background 0.3s; 
+        }
 
         .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0.8rem 1rem; background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid var(--border-color);
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            padding: 0.8rem 0.8rem; 
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid transparent;
+            border-image: var(--accent-gradient) 1;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            width: 100%;
         }
 
         .brand-title {
-            font-size: 1.1rem; font-weight: 700;
-            background: linear-gradient(to right, #38bdf8, #c084fc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1rem; 
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            display: flex; 
+            align-items: center; 
+            gap: 0.4rem;
+            white-space: nowrap;
         }
 
-        .container { max-width: 1000px; margin: 1rem auto; padding: 0 0.8rem; }
+        .header-actions { 
+            display: flex; 
+            gap: 0.3rem; 
+            align-items: center; 
+        }
 
-        .controls-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .btn-header {
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color);
+            color: var(--text-main); 
+            padding: 0.4rem 0.6rem; 
+            border-radius: 20px;
+            cursor: pointer; 
+            font-size: 0.8rem; 
+            font-weight: 600;
+            display: inline-flex; 
+            align-items: center; 
+            gap: 0.3rem;
+            box-shadow: 0 2px 8px var(--shadow-color); 
+            transition: transform 0.1s;
+        }
+        .btn-header:active { transform: scale(0.95); }
+
+        .container { 
+            width: 100%; 
+            max-width: 1000px; 
+            margin: 1rem auto; 
+            padding: 0 0.8rem; 
+        }
+
+        .controls-row { display: flex; gap: 0.5rem; margin-bottom: 0.8rem; }
         .search-box { position: relative; flex-grow: 1; }
         .search-box input {
-            width: 100%; padding: 0.75rem 0.8rem 0.75rem 2.4rem;
-            background: var(--input-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; color: var(--text-main); font-size: 0.9rem; outline: none;
+            width: 100%; 
+            padding: 0.75rem 0.8rem 0.75rem 2.4rem;
+            background: var(--input-bg); 
+            border: 2px solid var(--border-color);
+            border-radius: 14px; 
+            color: var(--text-main); 
+            font-size: 0.9rem; 
+            outline: none;
+            box-shadow: 0 2px 10px var(--shadow-color);
         }
-        .search-box i { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
+        .search-box i { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: #10b981; }
+
+        .filter-bar {
+            display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.6rem; margin-bottom: 0.8rem;
+            scrollbar-width: none;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .chip {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 0.45rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+            white-space: nowrap; cursor: pointer; color: var(--text-sub); transition: all 0.2s;
+        }
+        .chip.active {
+            background: var(--accent-gradient); color: white; border-color: transparent;
+            box-shadow: 0 3px 10px var(--shadow-color);
+        }
 
         .breadcrumb {
             display: flex; align-items: center; gap: 0.4rem;
-            background: var(--card-bg); padding: 0.6rem 0.9rem;
-            border-radius: 12px; margin-bottom: 1.2rem; border: 1px solid var(--border-color);
-            font-size: 0.85rem; flex-wrap: wrap;
+            background: var(--card-bg); padding: 0.7rem 1rem;
+            border-radius: 14px; margin-bottom: 1.2rem; border: 1px solid var(--border-color);
+            font-size: 0.85rem; flex-wrap: wrap; box-shadow: 0 2px 10px var(--shadow-color);
         }
-        .crumb-item { color: #38bdf8; cursor: pointer; font-weight: 600; }
-        .crumb-current { color: var(--text-main); font-weight: 700; }
+        .crumb-item { color: #10b981; cursor: pointer; font-weight: 700; }
+        .crumb-current { color: #ec4899; font-weight: 800; }
 
-        .explorer-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .explorer-list { display: flex; flex-direction: column; gap: 0.7rem; }
         .item-row {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 0.8rem 1rem; display: flex;
+            border-radius: 14px; padding: 0.8rem 1rem; display: flex;
             align-items: center; justify-content: space-between; cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.2s, background 0.2s;
+            backdrop-filter: blur(6px);
         }
-        .item-row:hover { background: var(--card-hover); }
+        .item-row:hover { transform: translateY(-2px); background: var(--card-hover); }
 
-        .item-info { display: flex; align-items: center; gap: 0.6rem; flex-grow: 1; min-width: 0; }
-        .item-checkbox { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
+        .item-info { display: flex; align-items: center; gap: 0.7rem; flex-grow: 1; min-width: 0; }
+        .item-checkbox { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; accent-color: #10b981; }
+        
         .item-icon {
-            width: 38px; height: 38px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+            overflow: hidden;
         }
-        .folder-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-        .audio-icon { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
-        .file-icon { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+        .folder-icon { background: linear-gradient(135deg, #fef3c7, #fde047); color: #d97706; }
+        .plugin-icon { background: linear-gradient(135deg, #fbcfe8, #f472b6); color: #9d174d; }
+        .preset-icon { background: linear-gradient(135deg, #ccfbf1, #2dd4bf); color: #115e59; }
+        .file-icon { background: linear-gradient(135deg, #e2e8f0, #cbd5e1); color: #475569; }
+        .img-thumb { width: 100%; height: 100%; object-fit: cover; }
 
         .item-details { min-width: 0; flex-grow: 1; }
-        .item-details h4 { font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-details h4 { font-size: 0.9rem; color: var(--text-main); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item-details p { font-size: 0.75rem; color: var(--text-sub); }
 
         .action-area { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
         .btn-action {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color);
-            color: #38bdf8; padding: 0.4rem 0.7rem; border-radius: 8px;
-            cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;
+            background: var(--btn-grad); border: none;
+            color: white; padding: 0.45rem 0.8rem; border-radius: 10px;
+            cursor: pointer; font-size: 0.8rem; font-weight: 600; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 0.3rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
-        .btn-download { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: white; border: none; }
+        .btn-download { background: var(--btn-download); }
+        .btn-fav { background: transparent; color: #cbd5e1; font-size: 1.1rem; padding: 0.3rem; border: none; cursor: pointer; }
+        .btn-fav.active { color: #f59e0b; }
 
-        .loading-box { text-align: center; padding: 2.5rem 1rem; color: #38bdf8; }
-
-        /* Floating Audio Player */
-        .bottom-player {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #0f172a; border-top: 2px solid #38bdf8;
-            padding: 0.8rem 1rem; display: none; flex-direction: column; gap: 0.5rem; z-index: 999;
-        }
-        .player-header { display: flex; justify-content: space-between; align-items: center; }
-        .player-title { font-size: 0.85rem; color: #f8fafc; font-weight: 600; }
-        .audio-element { width: 100%; height: 36px; }
+        .loading-box { text-align: center; padding: 2.5rem 1rem; color: #10b981; font-weight: 700; }
+        .error-box { text-align: center; padding: 2rem 1rem; color: #ef4444; font-weight: 700; }
 
         .batch-bar {
-            position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%);
-            background: #38bdf8; color: #0f172a; padding: 0.6rem 1.2rem;
+            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+            background: var(--accent-gradient); color: white; padding: 0.6rem 1.2rem;
             border-radius: 30px; display: none; align-items: center; gap: 0.8rem;
-            font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 998;
+            font-weight: 700; box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 998;
+            white-space: nowrap;
         }
-        .batch-btn { background: #0f172a; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; cursor: pointer; }
+        .batch-btn { background: #0f172a; color: white; border: none; padding: 0.4rem 0.9rem; border-radius: 20px; cursor: pointer; font-weight: 700; }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); align-items: center; justify-content: center; padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            background: var(--card-bg); color: var(--text-main); padding: 1.8rem;
+            border-radius: 20px; border: 2px solid var(--border-color); max-width: 400px; width: 100%; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .dev-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 0.8rem; border: 3px solid #10b981; }
+        .dev-links { display: flex; flex-direction: column; gap: 0.6rem; margin: 1.2rem 0; }
+        .dev-link-btn {
+            background: linear-gradient(135deg, #1877f2, #0056b3); color: white;
+            padding: 0.7rem; border-radius: 12px; text-decoration: none; font-size: 0.88rem;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 700;
+        }
+        .dev-link-btn.page-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <div class="brand-title"><i class="fa-solid fa-folder-tree"></i> Drive Explorer</div>
+        <div class="brand-title"><i class="fa-solid fa-folder-tree"></i> FLM Gasy</div>
+        <div class="header-actions">
+            <!-- Bouton pour changer de thème (Clair / Maizina / Vert) -->
+            <button class="btn-header" onclick="rotateTheme()" title="Changer Thème">
+                <i class="fa-solid fa-palette" id="themeIcon"></i>
+            </button>
+            <button class="btn-header" onclick="toggleFavoritesMode()">
+                <i class="fa-solid fa-star" style="color: #f59e0b;"></i> <span id="favBtnText">Fav</span>
+            </button>
+            <select id="langSelect" class="btn-header" onchange="changeLanguage(this.value)">
+                <option value="fr">FR</option>
+                <option value="en">EN</option>
+                <option value="mg">MG</option>
+            </select>
+            <button class="btn-header" onclick="openDevModal()"><i class="fa-solid fa-code"></i> Dev</button>
+        </div>
     </div>
 
     <div class="container">
         <div class="controls-row">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="Search...">
+                <input type="text" id="searchInput" oninput="filterItems()" placeholder="Rechercher...">
             </div>
             <button onclick="refreshFolder()" class="btn-action"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+
+        <div class="filter-bar" id="filterBar">
+            <button class="chip active" data-cat="all" onclick="setCategory('all', this)">Tout</button>
+            <button class="chip" data-cat="plugins" onclick="setCategory('plugins', this)">Plugins</button>
+            <button class="chip" data-cat="presets" onclick="setCategory('presets', this)">Presets</button>
         </div>
 
         <div class="breadcrumb" id="breadcrumb"></div>
         <div class="explorer-list" id="explorerContainer"></div>
     </div>
 
-    <!-- Direct Play Player -->
-    <div class="bottom-player" id="bottomPlayer">
-        <div class="player-header">
-            <span class="player-title" id="playerTrackTitle">Track Title</span>
-            <button class="btn-action" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <audio id="mainAudioElement" class="audio-element" controls autoplay></audio>
-    </div>
-
     <!-- Selection Bar -->
     <div class="batch-bar" id="batchBar">
-        <span id="selectedCount">0 selected</span>
-        <button class="batch-btn" onclick="downloadSelected()">Download Selected</button>
+        <span id="selectedCount">0 sélectionné(s)</span>
+        <button class="batch-btn" id="downloadSelectedBtn" onclick="downloadSelected()">Télécharger</button>
+    </div>
+
+    <!-- Developer Modal -->
+    <div class="modal" id="devModal">
+        <div class="modal-content">
+            <img src="https://lh3.googleusercontent.com/d/103j27ePcTXWV4uHhJYyYXyK1CJBuDYKY" alt="Developer" class="dev-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+            <h3 style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FLM Gasy Plugins</h3>
+            <p style="font-size: 0.85rem; color: var(--text-sub); margin-top: 0.3rem;" id="devDesc">Développeur et créateur de la plateforme Explorer.</p>
+            
+            <div class="dev-links">
+                <a href="https://www.facebook.com/profile.php?id=61577608296459" target="_blank" class="dev-link-btn">
+                    <i class="fa-brands fa-facebook"></i> Facebook Profile
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61591617304593" target="_blank" class="dev-link-btn page-btn">
+                    <i class="fa-solid fa-flag"></i> Page Facebook
+                </a>
+            </div>
+
+            <button class="btn-action btn-download" onclick="closeDevModal()" style="width: 100%; justify-content: center; padding: 0.6rem;">Fermer</button>
+        </div>
     </div>
 
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4hIL73CM7Jnh2PYO5AMKXqSd6x3OchVLd7_Wi2Z4875uakmFV5W3wfTJZllhN8aW6/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXPeCz5r2p4nhEFjGn4xAWWm21CgDfziKprF2uR9PslSZsS76gXUfxiu-P2SPxjfzhRQ/exec";
         const ROOT_FOLDER_ID = "103j27ePcTXWV4uHhJYyYXyK1CJBuDYKY";
         
-        let folderHistory = [{ id: ROOT_FOLDER_ID, name: "Home" }];
+        let folderHistory = [{ id: ROOT_FOLDER_ID, name: "Accueil" }];
         let currentItems = [];
         let selectedItems = new Map();
+        let favorites = new Map(JSON.parse(localStorage.getItem('flm_favorites') || '[]'));
+        let currentLang = localStorage.getItem('flm_lang') || "fr";
+        let activeCategory = "all";
+        let isFavoritesMode = false;
+
+        const themes = ['light', 'dark', 'green'];
+
+        const i18n = {
+            fr: {
+                searchPh: "Rechercher...",
+                home: "Accueil",
+                loading: "Chargement...",
+                folder: "Dossier",
+                empty: "Aucun fichier ou dossier.",
+                selected: "sélectionné(s)",
+                downloadSelected: "Télécharger",
+                devDesc: "Développeur de la plateforme.",
+                error: "Erreur de chargement.",
+                fav: "Favoris"
+            },
+            en: {
+                searchPh: "Search...",
+                home: "Home",
+                loading: "Loading...",
+                folder: "Folder",
+                empty: "No files found.",
+                selected: "selected",
+                downloadSelected: "Download",
+                devDesc: "Developer of platform.",
+                error: "Loading error.",
+                fav: "Favorites"
+            },
+            mg: {
+                searchPh: "Hikaroka...",
+                home: "Mpandraisana",
+                loading: "Mampiditra...",
+                folder: "Dossier",
+                empty: "Tsy misy rakitra.",
+                selected: "voasafidy",
+                downloadSelected: "Ampidino",
+                devDesc: "Mpamorona ny tranonkala.",
+                error: "Nisy olana.",
+                fav: "Tianao"
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            document.getElementById('langSelect').value = currentLang;
+            changeLanguage(currentLang);
+            initPWA();
+            loadFolder(ROOT_FOLDER_ID);
+        });
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('flm_theme') || 'green';
+            applyTheme(savedTheme);
+        }
+
+        function rotateTheme() {
+            const currentTheme = localStorage.getItem('flm_theme') || 'green';
+            let nextIndex = (themes.indexOf(currentTheme) + 1) % themes.length;
+            let nextTheme = themes[nextIndex];
+            applyTheme(nextTheme);
+        }
+
+        function applyTheme(theme) {
+            document.body.classList.remove('dark-mode', 'green-mode');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+            } else if (theme === 'green') {
+                document.body.classList.add('green-mode');
+            }
+            localStorage.setItem('flm_theme', theme);
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('flm_lang', lang);
+            document.getElementById("searchInput").placeholder = i18n[lang].searchPh;
+            document.getElementById("downloadSelectedBtn").innerText = i18n[lang].downloadSelected;
+            document.getElementById("devDesc").innerText = i18n[lang].devDesc;
+            folderHistory[0].name = i18n[lang].home;
+            renderBreadcrumb();
+            filterItems();
+        }
 
         function loadFolder(folderId) {
+            isFavoritesMode = false;
+            document.getElementById('favBtnText').innerText = i18n[currentLang].fav;
+            
             const container = document.getElementById('explorerContainer');
-            container.innerHTML = `<div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
+            container.innerHTML = `<div class="loading-box"><i class="fa-solid fa-spinner fa-spin fa-2x"></i><p style="margin-top:0.5rem;">${i18n[currentLang].loading}</p></div>`;
             selectedItems.clear();
             updateBatchBar();
 
+            const cacheKey = `cache_folder_${folderId}`;
+            const cachedData = localStorage.getItem(cacheKey);
+            if (cachedData) {
+                try {
+                    currentItems = JSON.parse(cachedData);
+                    renderItems(currentItems);
+                    renderBreadcrumb();
+                } catch(e) {}
+            }
+
             fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Erreur réseau');
+                return res.json();
+            })
             .then(data => {
                 currentItems = data.items || [];
+                localStorage.setItem(cacheKey, JSON.stringify(currentItems));
                 renderItems(currentItems);
                 renderBreadcrumb();
+            })
+            .catch(err => {
+                if (!cachedData) {
+                    container.innerHTML = `<div class="error-box"><i class="fa-solid fa-triangle-exclamation fa-2x"></i><p style="margin-top:0.5rem;">${i18n[currentLang].error}</p></div>`;
+                }
             });
         }
 
         function renderItems(items) {
             const container = document.getElementById('explorerContainer');
-            if (!items || items.length === 0) {
-                container.innerHTML = `<p style="text-align:center; padding: 2rem; color: var(--text-sub);">Empty folder.</p>`;
-                return;
-            }
             container.innerHTML = '';
 
-            items.forEach(item => {
-                const isAudio = item.name.match(/\.(mp3|wav|ogg|m4a|flac)$/i);
-                const iconClass = item.isFolder ? "folder-icon" : (isAudio ? "audio-icon" : "file-icon");
-                const iconSymbol = item.isFolder ? "fa-folder" : (isAudio ? "fa-music" : "fa-file");
+            if (!items || items.length === 0) {
+                container.innerHTML = `<p style="text-align:center; padding: 2rem; color: var(--text-sub); font-weight:600;">${i18n[currentLang].empty}</p>`;
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            items.forEach((item) => {
+                const name = item.name || '';
+                const isPlugin = Boolean(name.match(/\.(dll|vst|vst3)$/i));
+                const isPreset = Boolean(name.match(/\.(fxp|fst|flp)$/i));
+                const isImage = Boolean(name.match(/\.(jpg|jpeg|png|webp)$/i));
+
+                let iconClass = "file-icon";
+                let iconSymbol = "fa-file";
+
+                if (item.isFolder) {
+                    iconClass = "folder-icon";
+                    iconSymbol = "fa-folder";
+                } else if (isPlugin) {
+                    iconClass = "plugin-icon";
+                    iconSymbol = "fa-plug";
+                } else if (isPreset) {
+                    iconClass = "preset-icon";
+                    iconSymbol = "fa-sliders";
+                }
 
                 const downloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
+                const isFav = favorites.has(item.id);
 
-                let audioPlayBtn = (!item.isFolder && isAudio) ? `
-                    <button class="btn-action" onclick="playAudioDirect('${item.id}', '${escapeQuotes(item.name)}', event)">
-                        <i class="fa-solid fa-play"></i> Play
-                    </button>
-                ` : '';
+                const row = document.createElement('div');
+                row.className = 'item-row';
+                if (item.isFolder) {
+                    row.onclick = () => openSubfolder(item.id, name);
+                }
 
-                // Folders have no checkboxes or download buttons
-                let checkboxHTML = item.isFolder ? '' : `<input type="checkbox" class="item-checkbox" onclick="toggleSelect('${item.id}', '${downloadUrl}', event)">`;
+                let iconHTML = `<i class="fa-solid ${iconSymbol}"></i>`;
+                if (isImage) {
+                    const imgUrl = `https://drive.google.com/thumbnail?id=${item.id}&sz=w100`;
+                    iconHTML = `<img src="${imgUrl}" class="img-thumb" alt="preview" onerror="this.outerHTML='<i class=\\'fa-solid fa-file-image\\'></i>'">`;
+                }
+
+                let checkboxHTML = item.isFolder ? '' : `<input type="checkbox" class="item-checkbox" ${selectedItems.has(item.id) ? 'checked' : ''} onclick="toggleSelect('${item.id}', '${downloadUrl}', event)">`;
+                
                 let downloadBtnHTML = item.isFolder ? '' : `
                     <a href="${downloadUrl}" class="btn-action btn-download" target="_blank" onclick="event.stopPropagation();">
                         <i class="fa-solid fa-download"></i>
                     </a>
                 `;
 
-                container.innerHTML += `
-                    <div class="item-row" onclick="${item.isFolder ? `openSubfolder('${item.id}', '${escapeQuotes(item.name)}')` : ''}">
-                        <div class="item-info">
-                            ${checkboxHTML}
-                            <div class="item-icon ${iconClass}"><i class="fa-solid ${iconSymbol}"></i></div>
-                            <div class="item-details">
-                                <h4>${item.name}</h4>
-                                <p>${item.isFolder ? 'Folder' : item.size}</p>
-                            </div>
-                        </div>
-                        <div class="action-area">
-                            ${audioPlayBtn}
-                            ${downloadBtnHTML}
+                row.innerHTML = `
+                    <div class="item-info">
+                        ${checkboxHTML}
+                        <div class="item-icon ${iconClass}">${iconHTML}</div>
+                        <div class="item-details">
+                            <h4>${escapeHTML(name)}</h4>
+                            <p>${item.isFolder ? i18n[currentLang].folder : (item.size || '')}</p>
                         </div>
                     </div>
+                    <div class="action-area">
+                        <button class="btn-fav ${isFav ? 'active' : ''}" onclick="toggleFavorite(event, '${item.id}', '${escapeHTML(name)}', ${item.isFolder}, '${item.size || ''}')">
+                            <i class="fa-solid fa-star"></i>
+                        </button>
+                        ${downloadBtnHTML}
+                    </div>
                 `;
+
+                fragment.appendChild(row);
             });
+
+            container.appendChild(fragment);
         }
 
-        /* Direct Play Audio Stream */
-        function playAudioDirect(id, title, event) {
-            event.stopPropagation();
-            const player = document.getElementById('bottomPlayer');
-            const audio = document.getElementById('mainAudioElement');
-            const titleEl = document.getElementById('playerTrackTitle');
-
-            audio.src = `https://lh3.googleusercontent.com/d/${id}`;
-            titleEl.innerText = title;
-            player.style.display = 'flex';
-            audio.play();
+        function setCategory(cat, el) {
+            activeCategory = cat;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            filterItems();
         }
 
-        function closePlayer() {
-            document.getElementById('mainAudioElement').pause();
-            document.getElementById('bottomPlayer').style.display = 'none';
+        function filterItems() {
+            const term = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            let filtered = currentItems.filter(item => {
+                const name = item.name.toLowerCase();
+                const matchesSearch = name.includes(term);
+
+                if (!matchesSearch) return false;
+
+                if (activeCategory === 'plugins') return name.match(/\.(dll|vst|vst3)$/i);
+                if (activeCategory === 'presets') return name.match(/\.(fxp|fst|flp)$/i);
+
+                return true;
+            });
+
+            renderItems(filtered);
         }
 
         function toggleSelect(id, url, event) {
@@ -246,11 +566,10 @@
 
         function updateBatchBar() {
             const bar = document.getElementById('batchBar');
-            document.getElementById('selectedCount').innerText = `${selectedItems.size} selected`;
+            document.getElementById('selectedCount').innerText = `${selectedItems.size} ${i18n[currentLang].selected}`;
             bar.style.display = selectedItems.size > 0 ? 'flex' : 'none';
         }
 
-        /* Download Selected Files */
         function downloadSelected() {
             let delay = 0;
             selectedItems.forEach((url) => {
@@ -264,17 +583,49 @@
             });
         }
 
+        function toggleFavorite(event, id, name, isFolder, size) {
+            event.stopPropagation();
+            if (favorites.has(id)) {
+                favorites.delete(id);
+            } else {
+                favorites.set(id, { id, name, isFolder, size });
+            }
+            localStorage.setItem('flm_favorites', JSON.stringify(Array.from(favorites.entries())));
+            
+            if (isFavoritesMode) {
+                renderFavorites();
+            } else {
+                filterItems();
+            }
+        }
+
+        function toggleFavoritesMode() {
+            isFavoritesMode = !isFavoritesMode;
+            if (isFavoritesMode) {
+                renderFavorites();
+            } else {
+                renderItems(currentItems);
+            }
+        }
+
+        function renderFavorites() {
+            const favArray = Array.from(favorites.values());
+            renderItems(favArray);
+            document.getElementById('breadcrumb').innerHTML = `<span class="crumb-current"><i class="fa-solid fa-star"></i> ${i18n[currentLang].fav}</span>`;
+        }
+
         function openSubfolder(id, name) { folderHistory.push({ id: id, name: name }); loadFolder(id); }
         function refreshFolder() { loadFolder(folderHistory[folderHistory.length - 1].id); }
 
         function renderBreadcrumb() {
+            if (isFavoritesMode) return;
             const breadcrumbEl = document.getElementById('breadcrumb');
             breadcrumbEl.innerHTML = '';
             folderHistory.forEach((crumb, index) => {
                 if (index === folderHistory.length - 1) {
-                    breadcrumbEl.innerHTML += `<span class="crumb-current">${crumb.name}</span>`;
+                    breadcrumbEl.innerHTML += `<span class="crumb-current">${escapeHTML(crumb.name)}</span>`;
                 } else {
-                    breadcrumbEl.innerHTML += `<span class="crumb-item" onclick="navigateToFolder(${index})">${crumb.name}</span> / `;
+                    breadcrumbEl.innerHTML += `<span class="crumb-item" onclick="navigateToFolder(${index})">${escapeHTML(crumb.name)}</span> / `;
                 }
             });
         }
@@ -284,14 +635,33 @@
             loadFolder(folderHistory[folderHistory.length - 1].id);
         }
 
-        function filterItems() {
-            const term = document.getElementById('searchInput').value.toLowerCase();
-            renderItems(currentItems.filter(i => i.name.toLowerCase().includes(term)));
+        function openDevModal() { document.getElementById('devModal').style.display = 'flex'; }
+        function closeDevModal() { document.getElementById('devModal').style.display = 'none'; }
+
+        function initPWA() {
+            const manifest = {
+                name: "FLM Gasy Plugins Explorer",
+                short_name: "FLM Explorer",
+                start_url: ".",
+                display: "standalone",
+                background_color: "#022c22",
+                theme_color: "#10b981",
+                icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", sizes: "512x512", type: "image/png" }]
+            };
+            const stringManifest = JSON.stringify(manifest);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            document.getElementById('manifestPlaceholder').setAttribute('href', URL.createObjectURL(blob));
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => self.skipWaiting());
+                    self.addEventListener('activate', e => self.clients.claim());
+                    self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+                `;
+                const swBlob = new Blob([swCode], {type: 'application/javascript'});
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
+            }
         }
-
-        function escapeQuotes(str) { return str.replace(/'/g, "\\'"); }
-
-        loadFolder(ROOT_FOLDER_ID);
     </script>
 </body>
 </html>
