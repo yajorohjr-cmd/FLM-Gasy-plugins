@@ -5,12 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Plugin & Sample Explorer</title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Plugin & Sample Explorer">
-    <meta property="og:description" content="Explore and download free audio samples, drum kits, and plugins.">
-    <meta property="og:image" content="https://img.freepik.com/free-vector/gradient-ui-ux-background_23-2149052117.jpg">
-    <meta property="og:type" content="website">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -34,454 +28,124 @@
             --input-bg: rgba(255, 255, 255, 0.9);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        html, body {
-            width: 100%;
-            overflow-x: hidden;
-        }
-
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-main);
-            min-height: 100vh;
-            padding-bottom: 5rem;
-            transition: background 0.3s;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
+        body { background: var(--bg-gradient); color: var(--text-main); min-height: 100vh; padding-bottom: 7rem; }
 
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            background: rgba(255, 255, 255, 0.03);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.8rem 1rem; background: rgba(255, 255, 255, 0.03);
             border-bottom: 1px solid var(--border-color);
-            flex-wrap: wrap;
-            gap: 0.5rem;
         }
 
         .brand-title {
-            font-size: 1.1rem;
-            font-weight: 700;
+            font-size: 1.1rem; font-weight: 700;
             background: linear-gradient(to right, #38bdf8, #c084fc);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            white-space: nowrap;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 0.4rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
+        .container { max-width: 1000px; margin: 1rem auto; padding: 0 0.8rem; }
 
-        .menu-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--border-color);
-            color: #38bdf8;
-            padding: 0.4rem 0.7rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            transition: all 0.2s;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .menu-btn:hover {
-            background: rgba(56, 189, 248, 0.2);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 1rem auto;
-            padding: 0 0.8rem;
-        }
-
-        .controls-row {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            width: 100%;
-        }
-
-        .search-box {
-            position: relative;
-            flex-grow: 1;
-            min-width: 0;
-        }
-
+        .controls-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+        .search-box { position: relative; flex-grow: 1; }
         .search-box input {
-            width: 100%;
-            padding: 0.75rem 0.8rem 0.75rem 2.4rem;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
+            width: 100%; padding: 0.75rem 0.8rem 0.75rem 2.4rem;
+            background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; color: var(--text-main); font-size: 0.9rem; outline: none;
         }
-
-        .search-box i {
-            position: absolute;
-            left: 0.8rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-sub);
-        }
-
-        .recent-bar {
-            background: var(--card-bg);
-            padding: 0.5rem 0.8rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-            font-size: 0.8rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            border: 1px solid var(--border-color);
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        .recent-bar span { color: var(--text-sub); flex-shrink: 0; }
-        .recent-tags { display: flex; gap: 0.4rem; overflow-x: auto; }
-        .recent-tag {
-            background: rgba(56, 189, 248, 0.15);
-            color: #38bdf8;
-            padding: 0.2rem 0.6rem;
-            border-radius: 6px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+        .search-box i { position: absolute; left: 0.8rem; top: 50%; transform: translateY(-50%); color: var(--text-sub); }
 
         .breadcrumb {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            background: var(--card-bg);
-            padding: 0.6rem 0.9rem;
-            border-radius: 12px;
-            margin-bottom: 1.2rem;
-            border: 1px solid var(--border-color);
-            font-size: 0.85rem;
-            width: 100%;
-            word-break: break-all;
+            display: flex; align-items: center; gap: 0.4rem;
+            background: var(--card-bg); padding: 0.6rem 0.9rem;
+            border-radius: 12px; margin-bottom: 1.2rem; border: 1px solid var(--border-color);
+            font-size: 0.85rem; flex-wrap: wrap;
         }
+        .crumb-item { color: #38bdf8; cursor: pointer; font-weight: 600; }
+        .crumb-current { color: var(--text-main); font-weight: 700; }
 
-        .crumb-item {
-            color: #38bdf8;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            font-weight: 600;
-        }
-
-        .crumb-separator { color: var(--text-sub); }
-        .crumb-current { color: var(--text-main); font-weight: 700; word-break: break-word; }
-
-        .explorer-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-            width: 100%;
-        }
-
+        .explorer-list { display: flex; flex-direction: column; gap: 0.6rem; }
         .item-row {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 0.8rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            transition: all 0.2s;
-            cursor: pointer;
-            animation: fadeIn 0.3s ease-in-out;
-            width: 100%;
-            box-sizing: border-box;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 0.8rem 1rem; display: flex;
+            align-items: center; justify-content: space-between; cursor: pointer;
         }
+        .item-row:hover { background: var(--card-hover); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .item-row:hover {
-            background: var(--card-hover);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-
-        .item-info {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-grow: 1;
-            min-width: 0;
-        }
-
-        .item-checkbox {
-            cursor: pointer;
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-        }
-
+        .item-info { display: flex; align-items: center; gap: 0.6rem; flex-grow: 1; min-width: 0; }
+        .item-checkbox { width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
         .item-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            flex-shrink: 0;
+            width: 38px; height: 38px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
         }
-
         .folder-icon { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
         .audio-icon { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
-        .zip-icon { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
         .file-icon { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
 
-        .item-details { 
-            min-width: 0; 
-            flex-grow: 1;
-        }
-        
-        .item-details h4 {
-            font-size: 0.9rem;
-            color: var(--text-main);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        .item-details { min-width: 0; flex-grow: 1; }
+        .item-details h4 { font-size: 0.9rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-details p { font-size: 0.75rem; color: var(--text-sub); }
 
-        .item-details p { 
-            font-size: 0.75rem; 
-            color: var(--text-sub); 
-            margin-top: 0.1rem; 
+        .action-area { display: flex; align-items: center; gap: 0.4rem; flex-shrink: 0; }
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--border-color);
+            color: #38bdf8; padding: 0.4rem 0.7rem; border-radius: 8px;
+            cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;
         }
+        .btn-download { background: linear-gradient(90deg, #06b6d4, #3b82f6); color: white; border: none; }
 
-        .action-area {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            flex-shrink: 0;
-            margin-left: 0.5rem;
+        .loading-box { text-align: center; padding: 2.5rem 1rem; color: #38bdf8; }
+
+        /* Floating Audio Player */
+        .bottom-player {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #0f172a; border-top: 2px solid #38bdf8;
+            padding: 0.8rem 1rem; display: none; flex-direction: column; gap: 0.5rem; z-index: 999;
         }
+        .player-header { display: flex; justify-content: space-between; align-items: center; }
+        .player-title { font-size: 0.85rem; color: #f8fafc; font-weight: 600; }
+        .audio-element { width: 100%; height: 36px; }
 
-        .btn-download-small {
-            background: linear-gradient(90deg, #06b6d4, #3b82f6);
-            color: white;
-            text-decoration: none;
-            padding: 0.4rem 0.7rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            white-space: nowrap;
-        }
-
-        .loading-box {
-            text-align: center;
-            padding: 2.5rem 1rem;
-            color: #38bdf8;
-            font-size: 1rem;
-        }
-
-        /* Batch Action Bar */
         .batch-bar {
-            position: fixed;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #38bdf8;
-            color: #0f172a;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            display: none;
-            align-items: center;
-            gap: 0.8rem;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 998;
-            white-space: nowrap;
-            max-width: 90%;
+            position: fixed; bottom: 5.5rem; left: 50%; transform: translateX(-50%);
+            background: #38bdf8; color: #0f172a; padding: 0.6rem 1.2rem;
+            border-radius: 30px; display: none; align-items: center; gap: 0.8rem;
+            font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.4); z-index: 998;
         }
-
-        .batch-btn {
-            background: #0f172a;
-            color: white;
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-
-        /* Modal Développeur */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-overlay.active { display: flex; }
-
-        .dev-card {
-            background: #1e293b;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            background: none; border: none;
-            color: #94a3b8; font-size: 1.5rem; cursor: pointer;
-        }
-
-        .dev-avatar {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 0.8rem auto; font-size: 1.8rem; color: white;
-        }
-
-        .dev-socials { display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1rem; }
-
-        .social-link {
-            display: flex; align-items: center; justify-content: center;
-            gap: 0.5rem; padding: 0.65rem; border-radius: 10px;
-            text-decoration: none; color: white; font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        .social-link.fb-page { background: #1877f2; }
-        .social-link.fb-personal { background: linear-gradient(90deg, #1877f2, #4267b2); }
-
-        /* Responsive Fixes for Mobile */
-        @media (max-width: 600px) {
-            .item-row {
-                flex-direction: column;
-                align-items: stretch;
-                gap: 0.6rem;
-            }
-
-            .item-details h4 { 
-                white-space: normal; 
-                word-break: break-word;
-            }
-
-            .action-area {
-                width: 100%;
-                display: flex;
-                gap: 0.4rem;
-                margin-left: 0;
-            }
-
-            .action-area .btn-download-small,
-            .action-area .menu-btn {
-                flex: 1;
-                padding: 0.45rem 0.2rem;
-                font-size: 0.75rem;
-            }
-        }
+        .batch-btn { background: #0f172a; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <div class="brand-title"><i class="fa-solid fa-folder-tree"></i> FL Studio Mobile Gasy</div>
-        <div class="header-actions">
-            <button class="menu-btn" onclick="toggleTheme()" title="Toggle Theme">
-                <i class="fa-solid fa-moon" id="themeIcon"></i>
-            </button>
-            <button class="menu-btn" onclick="switchLanguage()" id="langBtn">
-                <i class="fa-solid fa-globe"></i> EN
-            </button>
-            <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-code"></i> <span data-i18n="dev">Développeur</span></button>
-        </div>
+        <div class="brand-title"><i class="fa-solid fa-folder-tree"></i> Drive Explorer</div>
     </div>
 
     <div class="container">
         <div class="controls-row">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="Rechercher un dossier ou fichier..." data-i18n-ph="searchPh">
+                <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="Rechercher...">
             </div>
-
-            <button onclick="refreshFolder()" class="menu-btn" style="padding: 0 0.9rem;" title="Rafraîchir">
-                <i class="fa-solid fa-rotate-right"></i>
-            </button>
+            <button onclick="refreshFolder()" class="btn-action"><i class="fa-solid fa-rotate-right"></i></button>
         </div>
 
-        <div class="recent-bar" id="recentBar">
-            <span data-i18n="recentTitle">Récents:</span>
-            <div class="recent-tags" id="recentTags"></div>
-        </div>
-
-        <div class="breadcrumb" id="breadcrumb">
-            <span class="crumb-item" onclick="navigateToFolder('ROOT')"><i class="fa-solid fa-house"></i> <span data-i18n="home">Accueil</span></span>
-        </div>
-
-        <div class="explorer-list" id="explorerContainer">
-            <div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> <span data-i18n="loading">Chargement...</span></div>
-        </div>
+        <div class="breadcrumb" id="breadcrumb"></div>
+        <div class="explorer-list" id="explorerContainer"></div>
     </div>
 
-    <!-- Batch Download Bar -->
+    <!-- Direct Play Player -->
+    <div class="bottom-player" id="bottomPlayer">
+        <div class="player-header">
+            <span class="player-title" id="playerTrackTitle">Track Title</span>
+            <button class="btn-action" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <audio id="mainAudioElement" class="audio-element" controls autoplay></audio>
+    </div>
+
+    <!-- Selection Bar -->
     <div class="batch-bar" id="batchBar">
         <span id="selectedCount">0 sélectionné(s)</span>
-        <button class="batch-btn" onclick="downloadSelected()" data-i18n="downloadSelected">Télécharger la sélection</button>
-    </div>
-
-    <!-- Developer Modal -->
-    <div class="modal-overlay" id="devModal">
-        <div class="dev-card">
-            <button class="close-btn" onclick="toggleMenu()">&times;</button>
-            <div class="dev-avatar"><i class="fa-solid fa-user-gear"></i></div>
-            <h2 data-i18n="dev">Développeur</h2>
-            <p style="color: #94a3b8; margin-top: 0.4rem; font-size: 0.85rem;" data-i18n="devSubtitle">Contactez-moi via ces liens :</p>
-            <div class="dev-socials">
-                <a href="https://www.facebook.com/profile.php?id=61591617304593" target="_blank" class="social-link fb-page">
-                    <i class="fa-brands fa-facebook"></i> <span data-i18n="fbPage">Page Facebook</span>
-                </a>
-                <a href="https://www.facebook.com/profile.php?id=61577608296459" target="_blank" class="social-link fb-personal">
-                    <i class="fa-brands fa-facebook-f"></i> <span data-i18n="fbProfile">Profil Personnel</span>
-                </a>
-            </div>
-        </div>
+        <button class="batch-btn" onclick="downloadSelected()">Telecharger (Maro)</button>
     </div>
 
     <script>
@@ -490,281 +154,139 @@
         
         let folderHistory = [{ id: ROOT_FOLDER_ID, name: "Accueil" }];
         let currentItems = [];
-        let selectedItems = new Set();
-        let currentLang = 'fr';
-        let recentFolders = [];
-
-        const i18n = {
-            fr: {
-                dev: "Développeur",
-                searchPh: "Rechercher un dossier ou fichier...",
-                recentTitle: "Récents:",
-                home: "Accueil",
-                loading: "Chargement des fichiers...",
-                folder: "Dossier",
-                size: "Taille: ",
-                play: "Écouter",
-                download: "Télécharger",
-                share: "Partager",
-                downloadSelected: "Télécharger la sélection",
-                copied: "Lien copié !",
-                devSubtitle: "Contactez-moi via ces liens :",
-                fbPage: "Page Facebook",
-                fbProfile: "Profil Personnel",
-                empty: "Aucun fichier ou dossier trouvé."
-            },
-            en: {
-                dev: "Developer",
-                searchPh: "Search folder or file...",
-                recentTitle: "Recent:",
-                home: "Home",
-                loading: "Loading files...",
-                folder: "Folder",
-                size: "Size: ",
-                play: "Listen",
-                download: "Download",
-                share: "Share",
-                downloadSelected: "Download selected",
-                copied: "Link copied!",
-                devSubtitle: "Contact me via these links:",
-                fbPage: "Facebook Page",
-                fbProfile: "Personal Profile",
-                empty: "No files or folders found."
-            }
-        };
-
-        function switchLanguage() {
-            currentLang = currentLang === 'fr' ? 'en' : 'fr';
-            document.getElementById('langBtn').innerHTML = `<i class="fa-solid fa-globe"></i> ${currentLang.toUpperCase()}`;
-            
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (i18n[currentLang][key]) el.innerText = i18n[currentLang][key];
-            });
-
-            document.querySelectorAll('[data-i18n-ph]').forEach(el => {
-                const key = el.getAttribute('data-i18n-ph');
-                if (i18n[currentLang][key]) el.placeholder = i18n[currentLang][key];
-            });
-
-            renderItems(currentItems);
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const icon = document.getElementById('themeIcon');
-            icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-        }
+        let selectedItems = new Map();
 
         function loadFolder(folderId) {
             const container = document.getElementById('explorerContainer');
-            container.innerHTML = `<div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> ${i18n[currentLang].loading}</div>`;
+            container.innerHTML = `<div class="loading-box"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>`;
             selectedItems.clear();
             updateBatchBar();
 
-            fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`, {
-                method: 'GET',
-                redirect: 'follow'
-            })
+            fetch(`${APPS_SCRIPT_URL}?folderId=${folderId}`)
             .then(res => res.json())
             .then(data => {
-                if (data.error || !data.items) {
-                    container.innerHTML = `<p style="color:#f43f5e; text-align:center; padding: 2rem;">⚠️ Error loading folder.</p>`;
-                    return;
-                }
-                currentItems = data.items;
+                currentItems = data.items || [];
                 renderItems(currentItems);
                 renderBreadcrumb();
-            })
-            .catch(err => {
-                container.innerHTML = `<p style="color:#f43f5e; text-align:center; padding: 2rem;">⚠️ Connection error. Please check your internet.</p>`;
             });
         }
 
         function renderItems(items) {
             const container = document.getElementById('explorerContainer');
-
             if (!items || items.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:var(--text-sub); padding: 2rem;">${i18n[currentLang].empty}</p>`;
+                container.innerHTML = `<p style="text-align:center; padding: 2rem; color: var(--text-sub);">Empty folder.</p>`;
                 return;
             }
-
             container.innerHTML = '';
 
             items.forEach(item => {
-                let iconClass = "file-icon";
-                let iconSymbol = "fa-file";
                 const isAudio = item.name.match(/\.(mp3|wav|ogg|m4a|flac)$/i);
+                const iconClass = item.isFolder ? "folder-icon" : (isAudio ? "audio-icon" : "file-icon");
+                const iconSymbol = item.isFolder ? "fa-folder" : (isAudio ? "fa-music" : "fa-file");
 
-                if (item.isFolder) {
-                    iconClass = "folder-icon";
-                    iconSymbol = "fa-folder";
-                } else if (isAudio) {
-                    iconClass = "audio-icon";
-                    iconSymbol = "fa-music";
-                } else if (item.name.match(/\.(zip|rar|7z)$/i)) {
-                    iconClass = "zip-icon";
-                    iconSymbol = "fa-file-zipper";
-                }
+                const downloadUrl = item.isFolder 
+                    ? `https://drive.google.com/drive/folders/${item.id}` 
+                    : `https://drive.google.com/uc?export=download&id=${item.id}`;
 
-                const downloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
-                const previewUrl = `https://drive.google.com/file/d/${item.id}/preview`;
-                
-                let audioControls = '';
-                if (!item.isFolder && isAudio) {
-                    audioControls = `
-                        <button class="menu-btn" onclick="openAudioPreview('${previewUrl}', event)" title="${i18n[currentLang].play}">
-                            <i class="fa-solid fa-play"></i> ${i18n[currentLang].play}
-                        </button>
-                    `;
-                }
+                let audioPlayBtn = (!item.isFolder && isAudio) ? `
+                    <button class="btn-action" onclick="playAudioDirect('${item.id}', '${escapeQuotes(item.name)}', event)">
+                        <i class="fa-solid fa-play"></i> Play
+                    </button>
+                ` : '';
 
-                let shareBtn = '';
-                if (!item.isFolder) {
-                    shareBtn = `
-                        <button class="menu-btn" onclick="shareItem('${downloadUrl}', event)" title="${i18n[currentLang].share}">
-                            <i class="fa-solid fa-share-nodes"></i>
-                        </button>
-                    `;
-                }
-
-                const rowHTML = `
+                container.innerHTML += `
                     <div class="item-row" onclick="${item.isFolder ? `openSubfolder('${item.id}', '${escapeQuotes(item.name)}')` : ''}">
                         <div class="item-info">
-                            ${!item.isFolder ? `<input type="checkbox" class="item-checkbox" onclick="toggleSelect('${downloadUrl}', event)">` : ''}
-                            <div class="item-icon ${iconClass}">
-                                <i class="fa-solid ${iconSymbol}"></i>
-                            </div>
+                            <input type="checkbox" class="item-checkbox" onclick="toggleSelect('${item.id}', '${downloadUrl}', event)">
+                            <div class="item-icon ${iconClass}"><i class="fa-solid ${iconSymbol}"></i></div>
                             <div class="item-details">
                                 <h4>${item.name}</h4>
-                                <p>${item.isFolder ? i18n[currentLang].folder : i18n[currentLang].size + item.size}</p>
+                                <p>${item.isFolder ? 'Dossier' : item.size}</p>
                             </div>
                         </div>
                         <div class="action-area">
-                            ${audioControls}
-                            ${shareBtn}
-                            ${!item.isFolder ? `
-                                <a href="${downloadUrl}" class="btn-download-small" target="_blank" onclick="event.stopPropagation();">
-                                    <i class="fa-solid fa-download"></i> ${i18n[currentLang].download}
-                                </a>
-                            ` : `<i class="fa-solid fa-chevron-right" style="color:var(--text-sub); margin-left: auto;"></i>`}
+                            ${audioPlayBtn}
+                            <a href="${downloadUrl}" class="btn-action btn-download" target="_blank" onclick="event.stopPropagation();">
+                                <i class="fa-solid fa-download"></i>
+                            </a>
                         </div>
                     </div>
                 `;
-                container.innerHTML += rowHTML;
             });
         }
 
-        // Fixed Audio Player (Opens native Google Drive audio player tab reliably without CORS/NotSupportedError)
-        function openAudioPreview(url, event) {
+        /* Direct Play Audio using Google Drive Direct CDN stream */
+        function playAudioDirect(id, title, event) {
             event.stopPropagation();
-            window.open(url, '_blank');
+            const player = document.getElementById('bottomPlayer');
+            const audio = document.getElementById('mainAudioElement');
+            const titleEl = document.getElementById('playerTrackTitle');
+
+            // Direct stream URL format bypassing CORS/Redirects
+            audio.src = `https://lh3.googleusercontent.com/d/${id}`;
+            titleEl.innerText = title;
+            player.style.display = 'flex';
+            audio.play();
         }
 
-        function toggleSelect(url, event) {
+        function closePlayer() {
+            document.getElementById('mainAudioElement').pause();
+            document.getElementById('bottomPlayer').style.display = 'none';
+        }
+
+        function toggleSelect(id, url, event) {
             event.stopPropagation();
-            if (event.target.checked) selectedItems.add(url);
-            else selectedItems.delete(url);
+            if (event.target.checked) selectedItems.set(id, url);
+            else selectedItems.delete(id);
             updateBatchBar();
         }
 
         function updateBatchBar() {
             const bar = document.getElementById('batchBar');
-            const count = document.getElementById('selectedCount');
-            if (selectedItems.size > 0) {
-                bar.style.display = 'flex';
-                count.innerText = `${selectedItems.size} ${i18n[currentLang].downloadSelected}`;
-            } else {
-                bar.style.display = 'none';
-            }
+            document.getElementById('selectedCount').innerText = `${selectedItems.size} sélectionné(s)`;
+            bar.style.display = selectedItems.size > 0 ? 'flex' : 'none';
         }
 
+        /* Download All Selected Sequentially */
         function downloadSelected() {
-            selectedItems.forEach(url => window.open(url, '_blank'));
-        }
-
-        function addRecent(id, name) {
-            if (!recentFolders.some(f => f.id === id) && id !== ROOT_FOLDER_ID) {
-                recentFolders.unshift({ id, name });
-                if (recentFolders.length > 4) recentFolders.pop();
-                renderRecents();
-            }
-        }
-
-        function renderRecents() {
-            const bar = document.getElementById('recentBar');
-            const container = document.getElementById('recentTags');
-            if (recentFolders.length === 0) {
-                bar.style.display = 'none';
-                return;
-            }
-            bar.style.display = 'flex';
-            container.innerHTML = '';
-            recentFolders.forEach(item => {
-                container.innerHTML += `<div class="recent-tag" onclick="loadFolder('${item.id}')">${item.name}</div>`;
+            let delay = 0;
+            selectedItems.forEach((url) => {
+                setTimeout(() => {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.click();
+                }, delay);
+                delay += 1000; // 1 second gap per item to trick popup blocker
             });
         }
 
-        function shareItem(url, event) {
-            event.stopPropagation();
-            navigator.clipboard.writeText(url).then(() => {
-                alert(i18n[currentLang].copied);
-            });
-        }
-
-        function openSubfolder(id, name) {
-            folderHistory.push({ id: id, name: name });
-            addRecent(id, name);
-            loadFolder(id);
-        }
-
-        function navigateToFolder(index) {
-            if (index === 'ROOT') {
-                folderHistory = [folderHistory[0]];
-            } else {
-                folderHistory = folderHistory.slice(0, index + 1);
-            }
-            const targetFolder = folderHistory[folderHistory.length - 1];
-            loadFolder(targetFolder.id);
-        }
-
-        function refreshFolder() {
-            const currentFolder = folderHistory[folderHistory.length - 1];
-            loadFolder(currentFolder.id);
-        }
+        function openSubfolder(id, name) { folderHistory.push({ id: id, name: name }); loadFolder(id); }
+        function refreshFolder() { loadFolder(folderHistory[folderHistory.length - 1].id); }
 
         function renderBreadcrumb() {
             const breadcrumbEl = document.getElementById('breadcrumb');
             breadcrumbEl.innerHTML = '';
-
             folderHistory.forEach((crumb, index) => {
-                const isLast = index === folderHistory.length - 1;
-                const displayName = crumb.id === ROOT_FOLDER_ID ? i18n[currentLang].home : crumb.name;
-                
-                if (isLast) {
-                    breadcrumbEl.innerHTML += `<span class="crumb-current">${displayName}</span>`;
+                if (index === folderHistory.length - 1) {
+                    breadcrumbEl.innerHTML += `<span class="crumb-current">${crumb.name}</span>`;
                 } else {
-                    breadcrumbEl.innerHTML += `
-                        <span class="crumb-item" onclick="navigateToFolder(${index})">${displayName}</span>
-                        <span class="crumb-separator"><i class="fa-solid fa-chevron-right" style="font-size:0.65rem;"></i></span>
-                    `;
+                    breadcrumbEl.innerHTML += `<span class="crumb-item" onclick="navigateToFolder(${index})">${crumb.name}</span> / `;
                 }
             });
         }
 
+        function navigateToFolder(index) {
+            folderHistory = folderHistory.slice(0, index + 1);
+            loadFolder(folderHistory[folderHistory.length - 1].id);
+        }
+
         function filterItems() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = currentItems.filter(item => item.name.toLowerCase().includes(searchTerm));
-            renderItems(filtered);
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            renderItems(currentItems.filter(i => i.name.toLowerCase().includes(term)));
         }
 
-        function toggleMenu() {
-            document.getElementById('devModal').classList.toggle('active');
-        }
-
-        function escapeQuotes(str) {
-            return str.replace(/'/g, "\\'");
-        }
+        function escapeQuotes(str) { return str.replace(/'/g, "\\'"); }
 
         loadFolder(ROOT_FOLDER_ID);
     </script>
