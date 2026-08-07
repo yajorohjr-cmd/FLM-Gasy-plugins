@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -124,7 +124,7 @@
         <div class="controls-row">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="Rechercher...">
+                <input type="text" id="searchInput" onkeyup="filterItems()" placeholder="Search...">
             </div>
             <button onclick="refreshFolder()" class="btn-action"><i class="fa-solid fa-rotate-right"></i></button>
         </div>
@@ -144,15 +144,15 @@
 
     <!-- Selection Bar -->
     <div class="batch-bar" id="batchBar">
-        <span id="selectedCount">0 sélectionné(s)</span>
-        <button class="batch-btn" onclick="downloadSelected()">Telecharger (Maro)</button>
+        <span id="selectedCount">0 selected</span>
+        <button class="batch-btn" onclick="downloadSelected()">Download Selected</button>
     </div>
 
     <script>
         const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4hIL73CM7Jnh2PYO5AMKXqSd6x3OchVLd7_Wi2Z4875uakmFV5W3wfTJZllhN8aW6/exec";
         const ROOT_FOLDER_ID = "103j27ePcTXWV4uHhJYyYXyK1CJBuDYKY";
         
-        let folderHistory = [{ id: ROOT_FOLDER_ID, name: "Accueil" }];
+        let folderHistory = [{ id: ROOT_FOLDER_ID, name: "Home" }];
         let currentItems = [];
         let selectedItems = new Map();
 
@@ -184,9 +184,7 @@
                 const iconClass = item.isFolder ? "folder-icon" : (isAudio ? "audio-icon" : "file-icon");
                 const iconSymbol = item.isFolder ? "fa-folder" : (isAudio ? "fa-music" : "fa-file");
 
-                const downloadUrl = item.isFolder 
-                    ? `https://drive.google.com/drive/folders/${item.id}` 
-                    : `https://drive.google.com/uc?export=download&id=${item.id}`;
+                const downloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
 
                 let audioPlayBtn = (!item.isFolder && isAudio) ? `
                     <button class="btn-action" onclick="playAudioDirect('${item.id}', '${escapeQuotes(item.name)}', event)">
@@ -194,35 +192,40 @@
                     </button>
                 ` : '';
 
+                // Folders have no checkboxes or download buttons
+                let checkboxHTML = item.isFolder ? '' : `<input type="checkbox" class="item-checkbox" onclick="toggleSelect('${item.id}', '${downloadUrl}', event)">`;
+                let downloadBtnHTML = item.isFolder ? '' : `
+                    <a href="${downloadUrl}" class="btn-action btn-download" target="_blank" onclick="event.stopPropagation();">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                `;
+
                 container.innerHTML += `
                     <div class="item-row" onclick="${item.isFolder ? `openSubfolder('${item.id}', '${escapeQuotes(item.name)}')` : ''}">
                         <div class="item-info">
-                            <input type="checkbox" class="item-checkbox" onclick="toggleSelect('${item.id}', '${downloadUrl}', event)">
+                            ${checkboxHTML}
                             <div class="item-icon ${iconClass}"><i class="fa-solid ${iconSymbol}"></i></div>
                             <div class="item-details">
                                 <h4>${item.name}</h4>
-                                <p>${item.isFolder ? 'Dossier' : item.size}</p>
+                                <p>${item.isFolder ? 'Folder' : item.size}</p>
                             </div>
                         </div>
                         <div class="action-area">
                             ${audioPlayBtn}
-                            <a href="${downloadUrl}" class="btn-action btn-download" target="_blank" onclick="event.stopPropagation();">
-                                <i class="fa-solid fa-download"></i>
-                            </a>
+                            ${downloadBtnHTML}
                         </div>
                     </div>
                 `;
             });
         }
 
-        /* Direct Play Audio using Google Drive Direct CDN stream */
+        /* Direct Play Audio Stream */
         function playAudioDirect(id, title, event) {
             event.stopPropagation();
             const player = document.getElementById('bottomPlayer');
             const audio = document.getElementById('mainAudioElement');
             const titleEl = document.getElementById('playerTrackTitle');
 
-            // Direct stream URL format bypassing CORS/Redirects
             audio.src = `https://lh3.googleusercontent.com/d/${id}`;
             titleEl.innerText = title;
             player.style.display = 'flex';
@@ -243,11 +246,11 @@
 
         function updateBatchBar() {
             const bar = document.getElementById('batchBar');
-            document.getElementById('selectedCount').innerText = `${selectedItems.size} sélectionné(s)`;
+            document.getElementById('selectedCount').innerText = `${selectedItems.size} selected`;
             bar.style.display = selectedItems.size > 0 ? 'flex' : 'none';
         }
 
-        /* Download All Selected Sequentially */
+        /* Download Selected Files */
         function downloadSelected() {
             let delay = 0;
             selectedItems.forEach((url) => {
@@ -257,7 +260,7 @@
                     a.target = '_blank';
                     a.click();
                 }, delay);
-                delay += 1000; // 1 second gap per item to trick popup blocker
+                delay += 1000;
             });
         }
 
