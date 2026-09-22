@@ -466,10 +466,7 @@
                 loading: "Chargement des fichiers...",
                 folder: "Dossier",
                 size: "Taille: ",
-                play: "Écouter",
                 download: "Télécharger",
-                share: "Partager",
-                copied: "Lien copié !",
                 devSubtitle: "Contactez-moi via ces liens :",
                 fbPage: "Page Facebook",
                 fbProfile: "Profil Personnel",
@@ -483,10 +480,7 @@
                 loading: "Loading files...",
                 folder: "Folder",
                 size: "Size: ",
-                play: "Listen",
                 download: "Download",
-                share: "Share",
-                copied: "Link copied!",
                 devSubtitle: "Contact me via these links:",
                 fbPage: "Facebook Page",
                 fbProfile: "Personal Profile",
@@ -567,25 +561,6 @@
                 }
 
                 const downloadUrl = `https://drive.google.com/uc?export=download&id=${item.id}`;
-                const previewUrl = `https://drive.google.com/file/d/${item.id}/preview`;
-                
-                let audioControls = '';
-                if (!item.isFolder && isAudio) {
-                    audioControls = `
-                        <button class="menu-btn" onclick="openAudioPreview('${previewUrl}', event)" title="${i18n[currentLang].play}">
-                            <i class="fa-solid fa-play"></i> ${i18n[currentLang].play}
-                        </button>
-                    `;
-                }
-
-                let shareBtn = '';
-                if (!item.isFolder) {
-                    shareBtn = `
-                        <button class="menu-btn" onclick="shareItem('${downloadUrl}', event)" title="${i18n[currentLang].share}">
-                            <i class="fa-solid fa-share-nodes"></i>
-                        </button>
-                    `;
-                }
 
                 const rowHTML = `
                     <div class="item-row" onclick="${item.isFolder ? `openSubfolder('${item.id}', '${escapeQuotes(item.name)}')` : ''}">
@@ -599,8 +574,6 @@
                             </div>
                         </div>
                         <div class="action-area">
-                            ${audioControls}
-                            ${shareBtn}
                             ${!item.isFolder ? `
                                 <a href="${downloadUrl}" class="btn-download-small" target="_blank" onclick="event.stopPropagation();">
                                     <i class="fa-solid fa-download"></i> ${i18n[currentLang].download}
@@ -611,11 +584,6 @@
                 `;
                 container.innerHTML += rowHTML;
             });
-        }
-
-        function openAudioPreview(url, event) {
-            event.stopPropagation();
-            window.open(url, '_blank');
         }
 
         function addRecent(id, name) {
@@ -637,13 +605,6 @@
             container.innerHTML = '';
             recentFolders.forEach(item => {
                 container.innerHTML += `<div class="recent-tag" onclick="loadFolder('${item.id}')">${item.name}</div>`;
-            });
-        }
-
-        function shareItem(url, event) {
-            event.stopPropagation();
-            navigator.clipboard.writeText(url).then(() => {
-                alert(i18n[currentLang].copied);
             });
         }
 
