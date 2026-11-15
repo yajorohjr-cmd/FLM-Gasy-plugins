@@ -83,6 +83,13 @@ button{font:inherit;cursor:pointer;color:inherit}
 .soc a{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.7rem;border-radius:12px;color:#fff;font-weight:600;font-size:.88rem;text-decoration:none}
 .fb1{background:#1877f2}.fb2{background:linear-gradient(90deg,#1877f2,#4267b2)}
 .card iframe{width:100%;height:180px;border:0;border-radius:12px;margin-top:.8rem;background:#000}
+.inp{width:100%;height:46px;margin-top:1rem;padding:0 1rem;border-radius:12px;border:1px solid var(--bd);background:var(--inp);color:var(--tx);font-size:1rem;text-align:center;outline:none}
+.inp:focus{border-color:var(--ac)}
+.pri{margin-top:.8rem;width:100%;border:0;background:var(--g);color:#fff}
+.code{margin-top:1rem;padding:.9rem;border-radius:14px;background:var(--inp);border:1px dashed var(--ac);font:700 1.7rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;color:var(--ac);word-break:break-all}
+.er{margin-top:.6rem;min-height:1.1em;font-size:.82rem;color:#f43f5e}
+.sub2{margin-top:.5rem;font-size:.85rem;color:var(--sub)}
+.ic.lc{color:#f43f5e;background:rgba(244,63,94,.15)}
 @media(max-width:700px){
 .batch{bottom:4.7rem}
 #toast{bottom:8.3rem}
@@ -135,7 +142,33 @@ button{font:inherit;cursor:pointer;color:inherit}
 <div class="soc">
 <a class="fb1" href="https://www.facebook.com/profile.php?id=61591617304593" target="_blank" rel="noopener"><i class="fa-brands fa-facebook"></i> <span data-i="fbp">Page Facebook</span></a>
 <a class="fb2" href="https://www.facebook.com/profile.php?id=61577608296459" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i> <span data-i="fbf">Profil Personnel</span></a>
-</div></div></div>
+</div><button class="btn" id="ab" style="margin-top:1rem"><i class="fa-solid fa-user-shield"></i> <span data-i="adm">Espace admin</span></button></div></div>
+<div class="ov" id="cod" hidden>
+<div class="card"><button class="x" data-close>&times;</button>
+<div class="av"><i class="fa-solid fa-lock"></i></div>
+<h2 data-i="ctit">Dossier protégé</h2>
+<p class="sub2" data-i="csub">Entrez le code d'accès (usage unique).</p>
+<input class="inp" id="cin" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="12" placeholder="XXXX-XXXX" data-p="cph">
+<div class="er" id="cerr"></div>
+<button class="btn pri" id="cgo" data-i="cgo">Ouvrir</button>
+</div></div>
+<div class="ov" id="adm" hidden>
+<div class="card"><button class="x" data-close>&times;</button>
+<div class="av"><i class="fa-solid fa-user-shield"></i></div>
+<h2 data-i="adm">Espace admin</h2>
+<div id="a1">
+<input class="inp" id="apw" type="password" autocomplete="current-password" placeholder="Mot de passe" data-p="pw">
+<div class="er" id="aerr"></div>
+<button class="btn pri" id="alg" data-i="login">Connexion</button>
+</div>
+<div id="a2" hidden>
+<p class="sub2" id="ast"></p>
+<div class="code" id="acode"></div>
+<button class="btn pri" id="agn"><i class="fa-solid fa-key"></i> <span data-i="gen">Générer un nouveau code</span></button>
+<button class="btn" id="acp" style="margin-top:.6rem;width:100%"><i class="fa-regular fa-copy"></i> <span data-i="copyc">Copier le code</span></button>
+<div class="er" id="a2err"></div>
+</div>
+</div></div>
 <div class="ov" id="aud" hidden>
 <div class="card"><button class="x" data-close>&times;</button>
 <h3 id="an" style="font-size:.95rem;padding:0 1.6rem;word-break:break-word"></h3>
@@ -146,11 +179,12 @@ button{font:inherit;cursor:pointer;color:inherit}
 const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbw4hIL73CM7Jnh2PYO5AMKXqSd6x3OchVLd7_Wi2Z4875uakmFV5W3wfTJZllhN8aW6/exec";
 const ROOT_FOLDER_ID="103j27ePcTXWV4uHhJYyYXyK1CJBuDYKY";
 const ID_RE=/^[A-Za-z0-9_-]{10,100}$/;
+const ATO_ALIAS="ATOprotected";
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const ls={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const T={
-fr:{dev:"Développeur",sph:"Rechercher un dossier ou fichier...",rect:"Récents :",home:"Accueil",back:"Retour",find:"Recherche",refl:"Actualiser",folder:"Dossier",size:"Taille : ",play:"Écouter",dl:"Télécharger",share:"Partager",dls:"Télécharger la sélection",sel:"sélectionné(s)",clear:"Effacer la sélection",copied:"Lien copié !",sub:"Contactez-moi via ces liens :",fbp:"Page Facebook",fbf:"Profil Personnel",empty:"Aucun fichier ou dossier trouvé.",more:"Afficher plus",retry:"Réessayer",net:"Erreur réseau. Vérifiez votre connexion internet.",srv:"Impossible de charger ce dossier.",forb:"Accès refusé : dossier non autorisé.",tmo:"Délai dépassé. Veuillez réessayer.",dling:"Téléchargement",done:"Téléchargements lancés ✓",refd:"Actualisé ✓",nf:"dossier(s)",nfi:"fichier(s)",open:"Ouvrir dans Drive",theme:"Changer de thème"},
-en:{dev:"Developer",sph:"Search folder or file...",rect:"Recent:",home:"Home",back:"Back",find:"Search",refl:"Refresh",folder:"Folder",size:"Size: ",play:"Listen",dl:"Download",share:"Share",dls:"Download selected",sel:"selected",clear:"Clear selection",copied:"Link copied!",sub:"Contact me via these links:",fbp:"Facebook Page",fbf:"Personal Profile",empty:"No files or folders found.",more:"Show more",retry:"Retry",net:"Network error. Check your internet connection.",srv:"Unable to load this folder.",forb:"Access denied: folder not allowed.",tmo:"Request timed out. Please try again.",dling:"Downloading",done:"Downloads started ✓",refd:"Refreshed ✓",nf:"folder(s)",nfi:"file(s)",open:"Open in Drive",theme:"Toggle theme"}};
+fr:{dev:"Développeur",sph:"Rechercher un dossier ou fichier...",rect:"Récents :",home:"Accueil",back:"Retour",find:"Recherche",refl:"Actualiser",folder:"Dossier",size:"Taille : ",play:"Écouter",dl:"Télécharger",share:"Partager",dls:"Télécharger la sélection",sel:"sélectionné(s)",clear:"Effacer la sélection",copied:"Lien copié !",sub:"Contactez-moi via ces liens :",fbp:"Page Facebook",fbf:"Profil Personnel",empty:"Aucun fichier ou dossier trouvé.",more:"Afficher plus",retry:"Réessayer",net:"Erreur réseau. Vérifiez votre connexion internet.",srv:"Impossible de charger ce dossier.",forb:"Accès refusé : dossier non autorisé.",tmo:"Délai dépassé. Veuillez réessayer.",dling:"Téléchargement",done:"Téléchargements lancés ✓",refd:"Actualisé ✓",nf:"dossier(s)",nfi:"fichier(s)",open:"Ouvrir dans Drive",theme:"Changer de thème",adm:"Espace admin",pw:"Mot de passe",login:"Connexion",gen:"Générer un nouveau code",copyc:"Copier le code",active:"Code actif (usage unique)",used:"Dernier code déjà utilisé",none:"Aucun code généré",gend:"Nouveau code généré ✓",ccop:"Code copié !",badpw:"Mot de passe incorrect.",badcode:"Code invalide ou déjà utilisé.",locked:"Trop de tentatives. Réessayez plus tard.",sess:"Session admin expirée. Reconnectez-vous.",expired:"Accès expiré. Entrez un nouveau code.",ctit:"Dossier protégé",csub:"Entrez le code d'accès (usage unique).",cph:"XXXX-XXXX",cgo:"Ouvrir",prot:"Dossier protégé · code requis"},
+en:{dev:"Developer",sph:"Search folder or file...",rect:"Recent:",home:"Home",back:"Back",find:"Search",refl:"Refresh",folder:"Folder",size:"Size: ",play:"Listen",dl:"Download",share:"Share",dls:"Download selected",sel:"selected",clear:"Clear selection",copied:"Link copied!",sub:"Contact me via these links:",fbp:"Facebook Page",fbf:"Personal Profile",empty:"No files or folders found.",more:"Show more",retry:"Retry",net:"Network error. Check your internet connection.",srv:"Unable to load this folder.",forb:"Access denied: folder not allowed.",tmo:"Request timed out. Please try again.",dling:"Downloading",done:"Downloads started ✓",refd:"Refreshed ✓",nf:"folder(s)",nfi:"file(s)",open:"Open in Drive",theme:"Toggle theme",adm:"Admin area",pw:"Password",login:"Log in",gen:"Generate a new code",copyc:"Copy code",active:"Active code (single use)",used:"Last code already used",none:"No code generated",gend:"New code generated ✓",ccop:"Code copied!",badpw:"Wrong password.",badcode:"Invalid or already used code.",locked:"Too many attempts. Try again later.",sess:"Admin session expired. Log in again.",expired:"Access expired. Enter a new code.",ctit:"Protected folder",csub:"Enter the access code (single use).",cph:"XXXX-XXXX",cgo:"Open",prot:"Protected folder · code required"}};
 const K=[[/\.(mp3|wav|ogg|m4a|flac|aac|aiff?)$/i,'fa-solid fa-music','au'],[/\.(zip|rar|7z|tar|gz)$/i,'fa-solid fa-file-zipper','zp'],[/\.(png|jpe?g|gif|webp)$/i,'fa-solid fa-image','im'],[/\.(mp4|mkv|mov|webm)$/i,'fa-solid fa-video','vd'],[/\.(pdf|txt|docx?)$/i,'fa-solid fa-file-lines','dc'],[/\.apk$/i,'fa-brands fa-android','ap']];
 let lang,t,ctl,sd,tt;
 const st={path:[{id:ROOT_FOLDER_ID,name:"Accueil"}],items:[],view:[],shown:0,sel:new Set()};
@@ -170,14 +204,14 @@ function bar(){const n=st.sel.size;$('#batch').hidden=!n;$('#cnt').textContent=n
 function drawCrumbs(){const n=st.path.length;$('#crumbs').innerHTML=st.path.map((p,i)=>{const l=i?esc(p.name):'<i class="fa-solid fa-house"></i> '+t.home;return i===n-1?`<span class="cur">${l}</span>`:`<button class="lk" data-k="${i}">${l}</button><i class="fa-solid fa-chevron-right sp"></i>`}).join('')}
 function recents(){const r=ls.get('flm_recent',[]);return Array.isArray(r)?r.filter(x=>x&&typeof x.name==='string'&&Array.isArray(x.path)&&x.path.length>1&&x.path[0].id===ROOT_FOLDER_ID&&x.path.every(p=>p&&ID_RE.test(p.id)&&typeof p.name==='string')):[]}
 function drawRecent(){const r=recents();$('#rec').hidden=!r.length;$('#rt').innerHTML=r.map((x,i)=>`<button data-r="${i}">${esc(x.name)}</button>`).join('')}
-function addRecent(){const c=st.path[st.path.length-1];const r=recents().filter(x=>x.id!==c.id);r.unshift({id:c.id,name:c.name,path:st.path});ls.set('flm_recent',r.slice(0,5));drawRecent()}
+function addRecent(){if(st.path.some(p=>p.id===ATO_ALIAS))return;const c=st.path[st.path.length-1];const r=recents().filter(x=>x.id!==c.id);r.unshift({id:c.id,name:c.name,path:st.path});ls.set('flm_recent',r.slice(0,5));drawRecent()}
 
 function row(it,i){
-const f=it.isFolder,k=f?[0,'fa-solid fa-folder','fl']:kind(it.name);
+const f=it.isFolder,k=f?(it.locked?[0,'fa-solid fa-lock','lc']:[0,'fa-solid fa-folder','fl']):kind(it.name);
 return `<div class="row${f?' fold':''}" data-x="${i}"${f?' tabindex="0" role="button"':''}>
 <div class="inf">${f?'':`<input type="checkbox" class="ck" data-a="ck"${st.sel.has(it.id)?' checked':''}>`}
 <div class="ic ${k[2]}"><i class="${k[1]}"></i></div>
-<div class="dt"><h4>${esc(it.name)}</h4><p>${f?t.folder:t.size+esc(sz(it))}</p></div></div>
+<div class="dt"><h4>${esc(it.name)}</h4><p>${f?(it.locked?t.prot:t.folder):t.size+esc(sz(it))}</p></div></div>
 <div class="act">${!f&&k[2]==='au'?`<button class="btn" data-a="play"><i class="fa-solid fa-play"></i> ${t.play}</button>`:''}${f?'<i class="fa-solid fa-chevron-right ch"></i>':`<button class="btn" data-a="share" title="${t.share}"><i class="fa-solid fa-share-nodes"></i></button><a class="btn dlb" href="${esc(dlUrl(it.id))}" target="_blank" rel="noopener" data-a="dl"><i class="fa-solid fa-download"></i> ${t.dl}</a>`}</div></div>`}
 function chunk(){const L=$('#list'),m=L.querySelector('.more');if(m)m.remove();const e=Math.min(st.shown+60,st.view.length);let h='';for(let i=st.shown;i<e;i++)h+=row(st.view[i],i);st.shown=e;if(e<st.view.length)h+=`<button class="btn more" data-a="more">${t.more} (${st.view.length-e})</button>`;L.insertAdjacentHTML('beforeend',h)}
 function filter(){const q=norm($('#q').value.trim());st.view=q?st.items.filter(x=>norm(x.name).includes(q)):st.items;st.shown=0;$('#list').innerHTML='';const nf=st.items.filter(x=>x.isFolder).length;$('#meta').textContent=st.items.length?`${nf} ${t.nf} · ${st.items.length-nf} ${t.nfi}`:'';if(!st.view.length){$('#list').innerHTML=`<div class="msg"><i class="fa-solid fa-box-open"></i><p>${t.empty}</p></div>`;return}chunk()}
@@ -193,9 +227,10 @@ if(c&&!force&&Date.now()-c.t<3e5){setItems(c.items);return}
 $('#list').innerHTML='<div class="row sk"></div>'.repeat(6);
 const my=ctl=new AbortController(),to=setTimeout(()=>my.abort(),25000);
 try{
-const r=await fetch(`${APPS_SCRIPT_URL}?folderId=${encodeURIComponent(cur.id)}${force?'&refresh=1':''}`,{redirect:'follow',signal:my.signal});
+const r=await fetch(`${APPS_SCRIPT_URL}?folderId=${encodeURIComponent(cur.id)}${force?'&refresh=1':''}${tok()}`,{redirect:'follow',signal:my.signal});
 const d=await r.json();
 if(my!==ctl)return;
+if(d.error==='locked_folder'){ls.set('flm_vt','');toast(t.expired,1);st.path=[st.path[0]];load();showCode();return}
 if(d.error==='forbidden'||d.error==='invalid_folder'){if(cur.id!==ROOT_FOLDER_ID){toast(t.forb,1);st.path=[st.path[0]];return load()}throw 0}
 if(d.error||!Array.isArray(d.items))throw 0;
 cache.set(cur.id,{items:d.items,t:Date.now()});setItems(d.items);if(force)toast(t.refd)
@@ -205,7 +240,7 @@ fail(e&&e.name==='AbortError'?t.tmo:(e instanceof TypeError||!navigator.onLine)?
 }finally{clearTimeout(to)}}
 
 function go(p){st.path=p;load()}
-function openF(it){go(st.path.concat({id:it.id,name:it.name}));addRecent()}
+function openF(it){if(it.locked)return openLocked(it);go(st.path.concat({id:it.id,name:it.name}));addRecent()}
 function up(){if(st.path.length>1)go(st.path.slice(0,-1))}
 function play(it){$('#an').textContent=it.name;$('#af').src=pvUrl(it.id);$('#ao').href=pvUrl(it.id);$('#aud').hidden=false}
 function closeM(){$$('.ov').forEach(o=>o.hidden=true);$('#af').src='about:blank'}
@@ -239,6 +274,23 @@ $('#dla').onclick=dlAll;
 $('#clr').onclick=()=>{st.sel.clear();$$('.ck').forEach(c=>c.checked=false);bar()};
 $('#q').addEventListener('input',()=>{clearTimeout(sd);sd=setTimeout(()=>{if(st.items.length)filter()},120)});
 addEventListener('offline',()=>toast(t.net,1));
+let pend="ATO",at="";
+const tok=()=>st.path.some(p=>p.id===ATO_ALIAS)?'&token='+encodeURIComponent(ls.get('flm_vt','')):'';
+const api=p=>fetch(APPS_SCRIPT_URL+'?'+new URLSearchParams(p),{redirect:'follow'}).then(r=>r.json()).catch(()=>({error:'net'}));
+const em=e=>e==='bad_code'?t.badcode:e==='bad_password'?t.badpw:e==='locked'?t.locked:e==='net'?t.net:t.srv;
+async function copy(s){try{await navigator.clipboard.writeText(s)}catch(e){const x=document.createElement('textarea');x.value=s;document.body.appendChild(x);x.select();try{document.execCommand('copy')}catch(_){}x.remove()}}
+function showCode(n){pend=n||'ATO';$('#cin').value='';$('#cerr').textContent='';$('#cod').hidden=false;setTimeout(()=>$('#cin').focus(),50)}
+function openLocked(it){if(ls.get('flm_vt',''))go(st.path.concat({id:ATO_ALIAS,name:it.name}));else showCode(it.name)}
+async function redeem(){const v=$('#cin').value.trim();if(!v)return;$('#cerr').textContent='';const d=await api({action:'redeem',code:v});if(d.ok){ls.set('flm_vt',d.token);closeM();go(st.path.concat({id:ATO_ALIAS,name:pend}))}else $('#cerr').textContent=em(d.error)}
+function aPaint(s){$('#a1').hidden=true;$('#a2').hidden=false;$('#a2err').textContent='';$('#acode').textContent=s.active?s.code:'— — — —';$('#ast').textContent=s.active?t.active:s.used?t.used:t.none}
+function aOut(m){at='';$('#a2').hidden=true;$('#a1').hidden=false;$('#aerr').textContent=m||''}
+async function aLogin(){const pw=$('#apw').value;if(!pw)return;$('#aerr').textContent='';const d=await api({action:'adminLogin',pw});if(d.ok){at=d.token;$('#apw').value='';aPaint(d.status)}else $('#aerr').textContent=em(d.error)}
+async function aGen(){const d=await api({action:'adminGen',at});if(d.error)return aOut(t.sess);aPaint(d);toast(t.gend)}
+$('#ab').onclick=async()=>{$('#dev').hidden=true;$('#adm').hidden=false;if(at){const d=await api({action:'adminStatus',at});if(d.error)aOut(t.sess);else aPaint(d)}else{aOut();$('#apw').focus()}};
+$('#alg').onclick=aLogin;$('#agn').onclick=aGen;$('#cgo').onclick=redeem;
+$('#acp').onclick=async()=>{const c=$('#acode').textContent;if(/^[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(c)){await copy(c);toast(t.ccop)}};
+$('#cin').addEventListener('keydown',e=>{if(e.key==='Enter')redeem()});
+$('#apw').addEventListener('keydown',e=>{if(e.key==='Enter')aLogin()});
 
 setTheme(document.documentElement.dataset.theme||'dark');
 setLang(ls.get('flm_lang','fr')==='en'?'en':'fr');
